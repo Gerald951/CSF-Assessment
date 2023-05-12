@@ -132,6 +132,13 @@ public class UploadController {
 
 		
 	}
+
+	@GetMapping(path = "/bundles" , produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> retrieveBundles() {
+		String retrievedBundles = archiveRepository.getBundles().toString();
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(retrievedBundles);
+	}
 }
 // TODO: Task 2, Task 3, Task 4
 

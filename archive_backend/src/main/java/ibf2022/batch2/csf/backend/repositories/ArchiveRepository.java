@@ -2,10 +2,21 @@ package ibf2022.batch2.csf.backend.repositories;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
 
 @Repository
 public class ArchiveRepository {
@@ -57,9 +68,24 @@ public class ArchiveRepository {
 	// Write the native mongo query that you will be using in this method
 	//
 	//
-	public Object getBundles(/* any number of parameters here */) {
-		return null;
+	public JsonArray getBundles() {
+		ProjectionOperation projectFields = Aggregation.project("title", "date");
+
+		SortOperation sortByDate = Aggregation.sort(Sort.by(Direction.DESC, "date"));
+
+		Aggregation pipeline = Aggregation.newAggregation(projectFields, sortByDate);
+
+		AggregationResults<Document> results = template.aggregate(pipeline, "image", Document.class);
+
+		JsonArrayBuilder built = Json.createArrayBuilder();
+		for (Document d : results) {
+			JsonObject jo = Json.createObjectBuilder().add("title", (String) d.get("title")).add("date", (String) d.get("date")).build();
+			built.add(jo);
+		}
+
+		return built.build();
 	}
-
-
 }
+
+
+
