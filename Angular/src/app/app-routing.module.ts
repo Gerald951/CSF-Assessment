@@ -6,7 +6,7 @@ import { DisplayComponent } from './components/display.component';
 import { PhotoStorafeComponent } from './components/photo-storafe.component';
 
 const routes: Routes = [
-  {path:'', component:UploadComponent},
+  {path:'', component:PhotoStorafeComponent},
   {path:'upload', component:UploadComponent},
   {path:'display/:bundleId', component:DisplayComponent},
   {path: "**", redirectTo:'/', pathMatch: 'full'}
