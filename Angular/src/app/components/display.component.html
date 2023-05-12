@@ -1,0 +1,20 @@
+<h1>{{receivedBundle.title}}</h1>
+&nbsp;
+<h2>by {{receivedBundle.name}} on {{receivedBundle.date}}</h2>
+&nbsp;
+<h3>{{receivedBundle.comments}}</h3>
+&nbsp;
+
+
+
+<div class="container">
+    <div class="row justify-content-between">
+            <div class="row" *ngFor="let o of obj">
+                {{o.urls}}
+            </div>
+    </div>
+</div>
+
+<button [routerLink]="['/upload']">Back</button>
+
+

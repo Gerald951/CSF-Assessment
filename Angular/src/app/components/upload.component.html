@@ -1,0 +1,28 @@
+<h1>Upload</h1>
+&nbsp;
+<form [formGroup]="uploadForm" (ngSubmit)="submit()">
+    <div>
+        <label for="name">Name:</label>&nbsp;
+        <input type="text" formControlName="name" placeholder="Name">
+    </div>
+    &nbsp;
+    <div>
+        <label for="title">Title:</label>&nbsp;
+        <input type="text" formControlName="title" placeholder="Title">
+    </div>
+    &nbsp;
+    <div>
+        <label for="comment">Comment:</label>&nbsp;
+        <textarea formControlName="comment" cols="30" rows="10"></textarea>
+    </div>
+    &nbsp;
+    <div>
+        <label for="archive">Archive:</label>&nbsp;
+        <input type="file" accept=".zip" formControlName="zipFile" #file>
+    </div>
+    &nbsp;
+    <div style="display: flex;">
+        <button [routerLink]="['/']">Back</button>&nbsp;
+        <button type="submit" [disabled]="!uploadForm.valid">Submit</button>
+    </div>
+</form>
