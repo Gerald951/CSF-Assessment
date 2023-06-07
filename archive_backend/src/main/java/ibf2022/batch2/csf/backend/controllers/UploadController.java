@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import ibf2022.batch2.csf.backend.Utils;
 import ibf2022.batch2.csf.backend.repositories.ArchiveRepository;
 import ibf2022.batch2.csf.backend.repositories.ImageRepository;
 import jakarta.json.Json;
@@ -45,6 +46,8 @@ public class UploadController {
 	public ResponseEntity<String> upload(@RequestPart MultipartFile archive, @RequestPart String name,
 			@RequestPart String title, @RequestPart String comment) throws IOException {
 
+				System.out.println("HELPPPPP");
+
 		try {
 			// Creating a File object for the directory path
 			File directoryPath = new File(
@@ -63,7 +66,7 @@ public class UploadController {
 				}
 			}
 
-			String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss-"));
+			String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
 			String fileName = date + archive.getOriginalFilename();
 
 			// folderPath
@@ -113,7 +116,9 @@ public class UploadController {
 			return ResponseEntity.status(201).contentType(MediaType.APPLICATION_JSON).body(json.toString());
 
 		} catch (Exception e) {
-			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON).body("\r\n");
+			JsonObject err = Json.createObjectBuilder().add("error", e.getMessage()).build();
+
+			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON).body(err.toString());
 		}
 
 		
@@ -125,11 +130,18 @@ public class UploadController {
 		String result = archiveRepository.getBundleByBundleId(bundleId);
 
 		if (result == null) {
-			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON).body("BundleId Not Found");
+			return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON).body(null);
 		} else {
-			return ResponseEntity.status(201).contentType(MediaType.APPLICATION_JSON).body(result);
+			try {
+				JsonObject jo = Utils.stringToJson(result);
+				return ResponseEntity.status(201).contentType(MediaType.APPLICATION_JSON).body(jo.toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				JsonObject err = Json.createObjectBuilder().add("error", e.getMessage()).build();
+				
+				return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON).body(err.toString());
+			}
 		}
-
 		
 	}
 

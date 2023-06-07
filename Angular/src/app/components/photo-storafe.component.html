@@ -1,1 +1,12 @@
-<p>photo-storafe works!</p>
+<h1>Photo Storage</h1>
+
+<button [routerLink]="['/upload']">Upload</button>
+
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="row" *ngFor="let l of listOfStorage">
+            <a [routerLink]="['/display', l.bundleId]">{{l.title}}</a> {{l.date}}
+        </div>
+    </div>
+
+</div>

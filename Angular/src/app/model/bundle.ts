@@ -1,6 +1,6 @@
 export interface Bundle {
     isBundle: boolean
-    bundleId: string
+    bundleId: string | null
     date:string
     title:string
     name:string

@@ -78,6 +78,7 @@ public class ImageRepository {
             try(InputStream s3is = result.getObjectContent().getDelegateStream()){
                 byte[] buffer = s3is.readAllBytes();
                 encodedString = Base64.getEncoder().encodeToString(buffer); 
+				
 			}
 
 			return encodedString;

@@ -21,7 +21,7 @@ public class MongoConfig {
         MongoClient client = MongoClients.create(mongoUrl);
 
         // shows is the name of the database.
-        MongoTemplate template = new MongoTemplate(client, "tests");
+        MongoTemplate template = new MongoTemplate(client, "test");
 
         return template;
     }

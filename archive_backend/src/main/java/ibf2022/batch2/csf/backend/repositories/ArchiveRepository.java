@@ -34,9 +34,9 @@ public class ArchiveRepository {
 		
 		Document toInsert = new Document();
 		toInsert.append("bundleId", bundleId).append("date", date).append("title", title).append("name", name)
-				.append("cooments", comments).append("urls", URL);
+				.append("comments", comments).append("urls", URL);
 		
-		Document inserted = template.insert(toInsert, "image");
+		Document inserted = template.insert(toInsert, "archives");
 
 		if (inserted !=null) {
 			return true;
@@ -51,7 +51,7 @@ public class ArchiveRepository {
 	public String getBundleByBundleId(String bundleId) {
 		Query query = Query.query(Criteria.where("bundleId").is(bundleId));
 
-		Document result = template.findOne(query, Document.class, "image");
+		Document result = template.findOne(query, Document.class, "archives");
 
 		if (result == null) {
 			return null;
@@ -69,17 +69,21 @@ public class ArchiveRepository {
 	//
 	//
 	public JsonArray getBundles() {
-		ProjectionOperation projectFields = Aggregation.project("title", "date");
+		ProjectionOperation projectFields = Aggregation.project("bundleId", "title", "date");
 
 		SortOperation sortByDate = Aggregation.sort(Sort.by(Direction.DESC, "date"));
+		SortOperation sortByTitle = Aggregation.sort(Sort.by(Direction.ASC, "title"));
 
-		Aggregation pipeline = Aggregation.newAggregation(projectFields, sortByDate);
+		Aggregation pipeline = Aggregation.newAggregation(projectFields, sortByDate, sortByTitle);
 
-		AggregationResults<Document> results = template.aggregate(pipeline, "image", Document.class);
+		AggregationResults<Document> results = template.aggregate(pipeline, "archives", Document.class);
 
 		JsonArrayBuilder built = Json.createArrayBuilder();
 		for (Document d : results) {
-			JsonObject jo = Json.createObjectBuilder().add("title", (String) d.get("title")).add("date", (String) d.get("date")).build();
+			JsonObject jo = Json.createObjectBuilder().add("bundleId", (String) d.get("bundleId"))
+												.add("title", (String) d.get("title"))
+												.add("date", (String) d.get("date"))
+												.build();
 			built.add(jo);
 		}
 

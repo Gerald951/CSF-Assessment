@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UploadSearchService } from '../services/upload-search.service';
 import { Router } from '@angular/router';
 import { Bundle } from '../model/bundle';
+import { Upload } from '../model/upload';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-upload',
@@ -15,6 +17,7 @@ export class UploadComponent implements OnInit {
   bundle! : string
   receivedId!: string
   receivedResponse!: string
+  // posted$! : Subscription
 
   @ViewChild('file') zip : ElementRef
 
@@ -28,7 +31,7 @@ export class UploadComponent implements OnInit {
     return this.fb.group({
       name: this.fb.control('', Validators.required),
       title: this.fb.control('', Validators.required),
-      comment: this.fb.control(''),
+      comment: this.fb.control('', Validators.required),
       zipFile: this.fb.control('', Validators.required)
 
     })
@@ -37,27 +40,21 @@ export class UploadComponent implements OnInit {
  submit() {
     const formData = new FormData()
     formData.set('name', this.uploadForm.value['name'])
-    formData.set('archive', this.zip.nativeElement[0])
+    formData.set('archive', this.zip.nativeElement.files[0])
     formData.set('title', this.uploadForm.value['title'])
     formData.set('comment', this.uploadForm.value['comment'])
 
-    const bundle = {} as Bundle
 
-    this.searchSvc.uploadForm(formData).subscribe({
-      next: (data) => {
-        bundle.bundleId= data['bundleId'],
-        bundle.date= data['date'],
-        bundle.title= data['title'],
-        bundle.name= data['name'],
-        bundle.comments= data['comments'],
-        bundle.listOfURL = data['listOfURL']
+   this.searchSvc.uploadForm(formData).subscribe({
+      next: (data : Upload) => {
+        this.receivedId= data.bundleId
+        console.info('receivedId>>>' + this.receivedId)
+        this.router.navigate(['display', this.receivedId])
       },
       error: (error) => { alert("Internal Server Error")}
     })
    
-      console.info("uploaded")
-      this.receivedId = bundle['bundleId']
-      this.router.navigate(['display', this.receivedId])
+      
     }
   //   console.info('success')
   }

@@ -1,20 +1,24 @@
-<h1>{{receivedBundle.title}}</h1>
-&nbsp;
-<h2>by {{receivedBundle.name}} on {{receivedBundle.date}}</h2>
-&nbsp;
-<h3>{{receivedBundle.comments}}</h3>
-&nbsp;
+<div *ngIf="receivedBundle && receivedBundle.isBundle">
+    <h1>{{receivedBundle.title}}</h1>
+    &nbsp;
+    <h2>by {{receivedBundle.name}} on {{receivedBundle.date}}</h2>
+    &nbsp;
+    <h3>{{receivedBundle.comments}}</h3>
+    &nbsp;
 
-
-
-<div class="container">
-    <div class="row justify-content-between">
-            <div class="row" *ngFor="let o of obj">
-                {{o.urls}}
-            </div>
+    <div class="container">
+        <div class="row justify-content-between">
+                <div class="row" *ngFor="let o of listOfKeys">
+                    <img [src]=o alt="">
+                </div>
+        </div>
     </div>
 </div>
 
-<button [routerLink]="['/upload']">Back</button>
+<div *ngIf="!receivedBundle || !receivedBundle.isBundle">
+    <h2>Bundle ID is not found.</h2>
+</div>
+
+<button [routerLink]="['/']">Back</button>
 
 
